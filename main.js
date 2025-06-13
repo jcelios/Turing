@@ -1,4 +1,4 @@
-import { Logger, ConsoleFormatter, indent } from "/logger.js";
+import { Logger, ConsoleFormatter, indent } from "/util/logger.js";
 
 Object.prototype.print = function () {
   console.log(this);

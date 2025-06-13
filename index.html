@@ -4,11 +4,39 @@
     <meta charset="UTF-8" />
     <title>Document</title>
     <script type="module" src="./main.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <label for="select">Cellular Automata</label> <br />
 
-    <output style="display:block;font-family:monospace;margin-top:1em;margin-left:1em;"></output>
+    <select name="automata" id="select">
+      <option value="">Choose an Automata</option>
+      <hr />
+      <optgroup label="Basic">
+        <option value="turingsExample">Turing's Example</option>
+        <option value="ThreeStateBusyBeaver">3-State Busy Beaver</option>
+      </optgroup>
+      <optgroup label="Langton's Ants">
+        <option value="LR">LR</option>
+        <option value="LLRR">LLRR</option>
+        <option value="LRRRRRLLR">LRRRRRLLR</option>
+        <option value="RRLLLRLLLRRR">RRLLLRLLLRRR</option>
+      </optgroup>
+      <hr />
+      <optgroup label="Turmites">
+        <option value="">N/A</option>
+      </optgroup>
+      <hr />
+    </select>
+
+    <label>Steps: </label><button id="stepMinus"><</button><input type="text" size=5><button id="stepPlus">></button>
     
+    
+    
+    <button id="start">---Start---</button>
+
+    <output
+      style="display: block; font-family: monospace; margin-top: 1em"
+    ></output>
   </body>
 </html>

@@ -8,6 +8,8 @@ body {
   font-family: system-ui;
   color: white;
   background-color: #272727;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 
 hr {

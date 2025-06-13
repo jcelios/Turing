@@ -16,6 +16,7 @@ class TuringMachine {
     this.ID = TuringMachine.ID;
     this.name = this.constructor.name + " #" + TuringMachine.ID;
 
+    this.initialState = initialState;
     this.state = initialState;
     //this.stateSpace = ["A", "B", "C", "HALT"];
     ///this.finalStates = ["HALT"];
@@ -26,17 +27,25 @@ class TuringMachine {
     this.tapeLength = 6;
     this.tape = new Array(this.tapeLength).fill(this.blank);
 
+    this.initialHeadLocation = initialHeadLocation;
     this.headLocation = initialHeadLocation;
+    this.head = this.tape[this.headLocation];
+  }
+
+  reset() {
+    this.state = this.initialState;
+    this.tape = new Array(this.tapeLength).fill(this.blank);
+    this.headLocation = this.initialHeadLocation;
     this.head = this.tape[this.headLocation];
   }
 
   start(steps) {
     console.log("Starting", this.name);
-    this.print();
+    //this.print();
     for (let i = 0; i < steps; i++) {
       this.run();
     }
-    console.log("Halting", this.name);
+    //console.log("Halting", this.name);
   }
 
   read() {
@@ -113,7 +122,7 @@ class TuringMachine {
     this.read();
     this.readStateTable();
     log.indent(-1);
-    this.print();
+    //this.print();
   }
 
   transition(R, M, S) {
@@ -184,7 +193,7 @@ stateTable = [
   ["f", "_", "_", "R", "b"],
 ];
 
-//let turingsExample new TuringMachine("b", 0, "_", stateTable).start(15);
+//let turingsExample = new TuringMachine("b", 0, "_", stateTable).start(15);
 
 stateTable = [
   ["s1", "0", "N", "N", "H"],
@@ -215,6 +224,7 @@ class TuringMachine2D {
     this.ID = TuringMachine2D.ID;
     this.name = this.constructor.name + " #" + TuringMachine2D.ID;
 
+    this.initialState = initialState;
     this.state = initialState;
     //this.stateSpace = ["A", "B", "C", "HALT"];
     ///this.finalStates = ["HALT"];
@@ -229,21 +239,34 @@ class TuringMachine2D {
       new Array(this.tapeHeight).fill(this.blank)
     );
 
+    this.initialHeadLocation = initialHeadLocation;
     this.headX = initialHeadLocation[0];
     this.headY = initialHeadLocation[1];
     this.headLocation = [this.headX, this.headY];
     this.head = this.tape[this.headY][this.headX];
   }
 
-  async start(steps) {
+  reset() {
+    this.state = this.initialState;
+    this.steps = 0;
+    this.tape = Array.from(Array(this.tapeLength), () =>
+      new Array(this.tapeHeight).fill(this.blank)
+    );
+    this.headX = this.initialHeadLocation[0];
+    this.headY = this.initialHeadLocation[1];
+    this.headLocation = [this.headX, this.headY];
+    this.head = this.tape[this.headY][this.headX];
+  }
+
+  start(steps) {
     console.log("Starting", this.name);
-    this.print();
+    //this.print();
     for (let i = 0; i < steps; i++) {
-      await this.run();
+      this.run();
       //if (i % 1000 == 0) this.print();
-      if (i == steps - 1) this.print();
+      //if (i == steps - 1) this.print();
     }
-    console.log("Halting", this.name);
+    //console.log("Halting", this.name);
   }
 
   read() {
@@ -282,7 +305,7 @@ class TuringMachine2D {
     this.read();
   }
 
-  async run() {
+  run() {
     log.warn("Update");
     log.info("Waiting...");
     //await sleep(0);
@@ -328,7 +351,12 @@ class TuringMachine2D {
 
     let colors = [];
     for (let i = 0; i < 20; i++) {
-      colors.push([`color: rgb(${randomInt(0,255)}, ${randomInt(0,255)}, ${randomInt(0,255)});`]);
+      colors.push([
+        `color: rgb(${randomInt(0, 255)}, ${randomInt(0, 255)}, ${randomInt(
+          0,
+          255
+        )});`,
+      ]);
     }
 
     let color = (n) => {
@@ -407,8 +435,103 @@ function states(string) {
   return stateTable;
 }
 
-let langtonsAnt = new TuringMachine2D("N", [5, 5], "0", states("LR"));
-langtonsAnt.start(11000);
+let select = document.querySelector("select");
+let stepInput = document.querySelector("input");
+let start = document.querySelector("#start");
+let stepPlus = document.querySelector("#stepPlus");
+let stepMinus = document.querySelector("#stepMinus");
+//let stateTable;
+let currentAutomata;
+
+//l(select);
+select.addEventListener("change", (e) => {
+  console.clear();
+  let model = e.target.value;
+  //l(model);
+
+  //let langtonsAnt = new TuringMachine2D("N", [5, 5], "0", states(model));
+  switch (model) {
+    case "turingsExample":
+      stateTable = [
+        ["b", "_", "0", "R", "c"],
+        ["c", "_", "_", "R", "e"],
+        ["e", "_", "1", "R", "f"],
+        ["f", "_", "_", "R", "b"],
+      ];
+      stepInput.value = 15;
+      currentAutomata = new TuringMachine("b", 0, "_", stateTable);
+      break;
+    case "ThreeStateBusyBeaver":
+      stateTable = [
+        ["A", "0", "1", "R", "B"],
+        ["A", "1", "1", "L", "C"],
+        ["B", "0", "1", "L", "A"],
+        ["B", "1", "1", "R", "B"],
+        ["C", "0", "1", "L", "B"],
+        ["C", "1", "1", "N", "H"],
+        ["H", "1", "1", "N", "H"],
+      ];
+      stepInput.value = 15;
+      currentAutomata = new TuringMachine("A", 3, "0", stateTable);
+      break;
+    case "LR":
+      stepInput.value = 11000;
+      currentAutomata = new TuringMachine2D("N", [5, 5], "0", states(model));
+      break;
+    case "LLRR":
+      stepInput.value = 123157;
+      currentAutomata = new TuringMachine2D("N", [5, 5], "0", states(model));
+      break;
+    case "LRRRRRLLR":
+      stepInput.value = 70273;
+      currentAutomata = new TuringMachine2D("N", [5, 5], "0", states(model));
+      break;
+    case "RRLLLRLLLRRR":
+      stepInput.value = 32734;
+      currentAutomata = new TuringMachine2D("N", [5, 5], "0", states(model));
+      break;
+  }
+
+  //currentAutomata.start(stepInput.value);
+});
+
+stepMinus.addEventListener("click", (e) => {
+  stepInput.value--;
+  if (currentAutomata) {
+    console.clear();
+    currentAutomata.reset();
+    currentAutomata.start(stepInput.value);
+    currentAutomata.print();
+  }
+});
+
+stepInput.addEventListener("change", (e) => {
+  //stepInput.value;
+  if (currentAutomata) {
+    console.clear();
+    currentAutomata.reset();
+    currentAutomata.start(stepInput.value);
+    currentAutomata.print();
+  }
+});
+
+stepPlus.addEventListener("click", (e) => {
+  stepInput.value++;
+  if (currentAutomata) {
+    if (currentAutomata instanceof TuringMachine2D) console.clear();
+    currentAutomata.run();
+    currentAutomata.print();
+  }
+});
+
+start.addEventListener("click", (e) => {
+  console.clear();
+  currentAutomata.start(stepInput.value);
+  currentAutomata.print();
+});
+
+// let langtonsAnt = new TuringMachine2D("N", [5, 5], "0", states("LR"));
+// langtonsAnt.start(11000);
 
 // let langtonsAnt = new TuringMachine2D("N", [5, 5], "0", states("LLRR"));
 // langtonsAnt.start(123157);

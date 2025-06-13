@@ -16,7 +16,7 @@ Array.prototype.toString = function toString() {
   return "[" + [...val].join(", ") + "]";
 };
 
-let redirect = true;
+var redirect = true;
 
 // Define a new console:
 var console;
@@ -95,7 +95,7 @@ function consoleRedirect(oldConsole) {
     log: function (...input) {
       oldConsole.log(...input);
       //oldConsole.log(input);
-      if (input[0].includes("%c")) {
+      if (input?.[0]?.includes?.("%c")) {
         let A = input[0].split("%c");
         //oldConsole.log("A", A);
         A = A.map((x) => {
@@ -140,6 +140,8 @@ function consoleRedirect(oldConsole) {
     // Extra Functions
     clear: function () {
       oldConsole.clear();
+      let output = document.querySelector("output");
+      output.replaceChildren();
     },
     assert: function (...input) {
       oldConsole.assert(...input);

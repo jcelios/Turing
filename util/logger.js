@@ -110,7 +110,7 @@ function consoleRedirect(oldConsole) {
           let span = document.createElement("span");
           span.textContent = x;
           //oldConsole.log(input.slice(1)[i]);
-          span.style = input.slice(1)[i + 1] + "font-family:monospace;";
+          span.style = input.slice(1)[i-1] + "font-family:monospace;";
           output.unshift(span);
           return output;
         });
